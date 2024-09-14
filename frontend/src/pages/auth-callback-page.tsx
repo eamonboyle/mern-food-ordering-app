@@ -15,11 +15,10 @@ const AuthCallbackPage = () => {
             createUser({ auth0Id: user.sub, email: user.email });
             hasCreatedUser.current = true;
         }
-
         navigate("/");
     }, [createUser, navigate, user]);
 
-    return <div>Redirecting...</div>;
+    return <>Loading...</>;
 };
 
 export default AuthCallbackPage;

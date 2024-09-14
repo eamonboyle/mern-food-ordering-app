@@ -3,10 +3,14 @@ import { Button } from "./ui/button";
 import UsernameMenu from "./username-menu";
 
 const MainNav = () => {
-    const { loginWithRedirect, isAuthenticated } = useAuth0();
+    const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
-        <span className="flex space-x-2 items-center">
+        <nav>
             {isAuthenticated ? (
                 <UsernameMenu />
             ) : (
@@ -18,7 +22,7 @@ const MainNav = () => {
                     Login
                 </Button>
             )}
-        </span>
+        </nav>
     );
 };
 
