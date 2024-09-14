@@ -1,27 +1,26 @@
-import { useCreateUser } from "@/api/user-api";
-import { AppState, Auth0Provider, User } from "@auth0/auth0-react";
+import { Auth0Provider } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     children: React.ReactNode;
 }
 
 const Auth0ProviderWithNavigate = ({ children }: Props) => {
-    const { createUser } = useCreateUser();
+    const navigate = useNavigate();
 
     const domain = import.meta.env.VITE_AUTH0_DOMAIN;
     const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
     const redirectUri = import.meta.env.VITE_AUTH0_CALLBACK_URL;
+    const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
-    if (!domain || !clientId || !redirectUri) {
+    if (!domain || !clientId || !redirectUri || !audience) {
         throw new Error(
             "Please define the VITE_AUTH0_DOMAIN, VITE_AUTH0_CLIENT_ID and VITE_AUTH0_CALLBACK_URL environment variables inside .env"
         );
     }
 
-    const onRedirectCallback = async (appState?: AppState, user?: User) => {
-        if (user?.sub && user?.email) {
-            createUser({ auth0Id: user.sub, email: user.email });
-        }
+    const onRedirectCallback = async () => {
+        navigate("/auth/callback");
     };
 
     return (
@@ -30,6 +29,7 @@ const Auth0ProviderWithNavigate = ({ children }: Props) => {
             clientId={clientId}
             authorizationParams={{
                 redirect_uri: redirectUri,
+                audience
             }}
             onRedirectCallback={onRedirectCallback}
         >
